@@ -1,1 +1,58 @@
-readme
+#include <xc.h>
+
+// Assuming generic setup; configure these as per your PIC16F variant.
+#define _XTAL_FREQ 4000000 // Assuming a 4 MHz internal oscillator.
+#define LCD_RS PORTBbits.RB0  // Adjust pin
+#define LCD_EN PORTBbits.RB1  // Adjust pin
+#define LCD_DATA PORTB        // Adjust port for data lines (D4-D7)
+#define MOTOR_PIN PORTCbits.RC0  // Adjust pin for motor control
+#define TEMP_SENSOR_CHANNEL 0    // Adjust ADC channel
+#define HUM_SENSOR_CHANNEL 1     // Adjust ADC channel
+
+// Include libraries or additional code here, especially for LCD and ADC setup.
+
+void init(){
+    // Initialize ADC, LCD, and I/O pins.
+    TRISCbits.TRISC0 = 0; // Set MOTOR_PIN as output.
+    // Add your ADC and LCD initialization here.
+}
+
+unsigned int readADC(unsigned char channel){
+    // Configure ADC channel and initiate a read, then return the value.
+    // This function needs to be implemented based on your PIC variant.
+    return 0; // Placeholder return.
+}
+
+void displaySensorData(float temperature, float humidity){
+    // Function to display temperature and humidity on the LCD.
+    // Implement your LCD displaying logic here.
+}
+
+void controlMotor(float humidity){
+    if(humidity > 60.0){
+        // Logic to move motor up a little.
+        MOTOR_PIN = 1; // Example logic, adjust as needed.
+    } else {
+        // Keep motor closed or stop.
+        MOTOR_PIN = 0; // Example logic, adjust as needed.
+    }
+}
+
+void main(void) {
+    init(); // Initialize peripherals.
+
+    while(1){
+        unsigned int tempRaw = readADC(TEMP_SENSOR_CHANNEL);
+        unsigned int humRaw = readADC(HUM_SENSOR_CHANNEL);
+        
+        // Convert raw ADC values to actual temperature and humidity.
+        // Conversion depends on the sensors used; these are placeholders.
+        float temperature = tempRaw * 0.1; // Placeholder conversion.
+        float humidity = humRaw * 0.1; // Placeholder conversion.
+
+        displaySensorData(temperature, humidity);
+        controlMotor(humidity);
+        
+        __delay_ms(5000); // Wait for 5 seconds before updating again.
+    }
+}

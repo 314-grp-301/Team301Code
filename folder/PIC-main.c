@@ -34,11 +34,11 @@ void main(void)
        // Combine two bytes into a single 16-bit unsigned integer to form the raw humidity value.
        uint16_t rawHumidity = (humidityData[0] << 8) | humidityData[1];
        // Convert the raw humidity value to a percentage based on the sensor's scale factor.
-       //int humidityPercentage = 12;
+       int humidityPercentage = (rawHumidity / 16382*0)+11;
        
        uint8_t temp_f =0;
        uint8_t temp_c = 0;
-       
+       uint8_t rh =0;
        uint8_t data;
        uint8_t fw = 0b11101111;
        uint8_t bw = 0b11101101;
@@ -51,7 +51,6 @@ void main(void)
        //Motor turns on O2 port
        if (temp_f >= 88)
        {
-       int humidityPercentage = 9;
         HT_LED_SetHigh();
         __delay_ms(500);
         HT_LED_SetLow();
@@ -61,9 +60,9 @@ void main(void)
         HT_LED_SetLow();
         __delay_ms(500);
         HT_LED_SetHigh();
-        __delay_ms(500);
         HT_LED_SetLow();
         __delay_ms(500);
+        HT_LED_SetHigh();
         SPI1_Open(SPI1_DEFAULT);
         CSN_SetLow();
         data = SPI1_ExchangeByte(bw);  // Assuming 'bw' turns the motor on
@@ -71,49 +70,31 @@ void main(void)
         __delay_ms(50);  // Delays might be required for your specific motor control protocol
 
        }
-       if (temp_f >= 85 && temp_f <= 88) 
+       if (temp_f < 88)
        {
-        int humidityPercentage = 11;
         SPI1_Open(SPI1_DEFAULT);
         CSN_SetLow();
         data = SPI1_ExchangeByte(fw);
         CSN_SetHigh();
-        __delay_ms(500);   
-        printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
+        __delay_ms(500); 
        }
-       if (temp_f >= 81 && temp_f <= 84) 
+       if (temp_f <= 70)
        {
-        int humidityPercentage = 12;
-        SPI1_Open(SPI1_DEFAULT);
-        CSN_SetLow();
-        data = SPI1_ExchangeByte(fw);
-        CSN_SetHigh();
-        __delay_ms(500);    
-        printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
-       }
-        if (temp_f >= 77 && temp_f <= 80) 
-        {
-            
-        int humidityPercentage = 13;
-        SPI1_Open(SPI1_DEFAULT);
-        CSN_SetLow();
-        data = SPI1_ExchangeByte(fw);
-        CSN_SetHigh();
+        LT_LED_SetHigh();
         __delay_ms(500);
-        printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
-        }
-       if (temp_f < 77)
-       {
-        int humidityPercentage = 14;
-        SPI1_Open(SPI1_DEFAULT);
-        CSN_SetLow();
-        data = SPI1_ExchangeByte(fw);
-        CSN_SetHigh();
-        __delay_ms(500);    
-        printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
+        LT_LED_SetLow();
+        __delay_ms(500);
+        LT_LED_SetHigh();
+        __delay_ms(500);
+        LT_LED_SetLow();
+        __delay_ms(500);
+        LT_LED_SetHigh();
+        __delay_ms(500);
+        LT_LED_SetLow();
+        __delay_ms(500);
+        LT_LED_SetHigh();
        }
-      
-       //printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
+       printf("Humidity: %u%%\nTemp: %u\n\r", humidityPercentage, temp_f);
         __delay_ms(2500);  
     }
 }
